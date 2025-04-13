@@ -57,6 +57,8 @@ directive
     | text
     | number
     | bool
+    | byteSize
+    | timeDuration
     | column
     | colList
     | numberList
@@ -66,6 +68,14 @@ directive
     | properties
   )*?
   ;
+
+byteSize
+ : ByteSize
+ ;
+
+timeDuration
+ : TimeDuration
+ ;
 
 ifStatement
   : ifStat elseIfStat* elseStat? '}'
@@ -86,6 +96,7 @@ elseStat
 expression
   : '(' (~'(' | expression)* ')'
   ;
+
 
 forStatement
  : 'for' '(' Identifier '=' expression ';' expression ';' expression ')' '{'  statements '}'
@@ -122,6 +133,10 @@ properties
  | 'prop' ':' (propertyList)+ CBrace { notifyErrorListeners("Missing opening brace"); }
  | 'prop' ':' OBrace (propertyList)+  { notifyErrorListeners("Missing closing brace"); }
  ;
+
+
+
+
 
 propertyList
  : property (',' property)*
@@ -253,9 +268,18 @@ Bool
  | 'false'
  ;
 
+ByteSize
+ : Int ('.' Digit*)? ( 'B' | 'KB' | 'MB' | 'GB' | 'TB' | 'PB' | 'KIB' | 'MIB' | 'GIB' | 'TIB' | 'PIB' )
+ ;
+
+TimeDuration
+ : Int ('.' Digit*)? ( 'ns' | 'us' | 'ms' | 's' | 'm' | 'h' | 'd' )
+ ;
+
 Number
  : Int ('.' Digit*)?
  ;
+
 
 Identifier
  : [a-zA-Z_\-] [a-zA-Z_0-9\-]*
@@ -311,3 +335,5 @@ fragment Int
 fragment Digit
  : [0-9]
  ;
+
+
